@@ -1,7 +1,14 @@
 package com.mall;
 
-import java.sql.*;
-import java.text.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.Random;
 import java.util.TimeZone;
 
