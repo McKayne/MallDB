@@ -1,7 +1,17 @@
 package com.mall;
 
-import java.io.*;
-import java.sql.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -364,23 +374,6 @@ public class CreateAndFill {
 		createPaymentTypeTable(connection);
 		createPurchaseTable(connection);
 		createPurchasedWaresTable(connection);
-	}
-
-	public static Connection getConnection() {
-		try {
-			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException ex) {
-			ex.printStackTrace();
-		}
-
-		Connection connection = null;
-		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/mall", "postgres", "postgres");
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-
-		return connection;
 	}
 
 	public static void main(String[] args) {
