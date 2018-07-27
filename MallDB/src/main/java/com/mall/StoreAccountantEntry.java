@@ -90,8 +90,8 @@ public class StoreAccountantEntry {
 		String area = CashierEntry.getMallArea(accountantId, connection);
 
 		java.util.Date date = new java.util.Date();
-               	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-             	df.setTimeZone(TimeZone.getDefault());
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		df.setTimeZone(TimeZone.getDefault());
 
 		System.out.println();
 		System.out.println("Store accountant financial report " + df.format(date));

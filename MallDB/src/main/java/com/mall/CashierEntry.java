@@ -119,8 +119,8 @@ public class CashierEntry {
 		String area = getMallArea(cashierId, connection);
 
 		java.util.Date date = new java.util.Date();
-               	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-             	df.setTimeZone(TimeZone.getDefault());
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		df.setTimeZone(TimeZone.getDefault());
 
 		System.out.println();
 		System.out.println("Cashier financial report " + df.format(date));

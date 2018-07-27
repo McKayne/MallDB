@@ -1,18 +1,20 @@
 package com.mall;
 
-import java.awt.*;
-import java.sql.*;
-import javax.swing.*;
+import java.awt.GridLayout;
+
+import java.sql.Connection;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 public class MallFrame extends JFrame {
 
-	private final Connection connection;
-	private final JPanel contentPane = new JPanel(new GridLayout(1, 0));
-	private final CashierPanel cashier;
-	private final StoreAccountantPanel storeAccountant;
-	private final StoreOwnerPanel storeOwner;
+	private JTabbedPane initTaskPane(Connection connection) {
+		CashierPanel cashier = new CashierPanel(connection);
+		StoreAccountantPanel storeAccountant = new StoreAccountantPanel(connection);
+		StoreOwnerPanel storeOwner = new StoreOwnerPanel(connection);
 
-	private JTabbedPane initTaskPane() {
 		JTabbedPane taskPane = new JTabbedPane();
 		taskPane.addTab("Cashier", cashier);
 		taskPane.addTab("Store accountant", storeAccountant);
@@ -24,14 +26,13 @@ public class MallFrame extends JFrame {
 	}
 
 	public MallFrame(Connection connection) {
-		this.connection = connection;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		cashier = new CashierPanel(connection);
-		storeAccountant = new StoreAccountantPanel(connection);
-		storeOwner = new StoreOwnerPanel(connection);
-		contentPane.add(initTaskPane());
+
+		JPanel contentPane = new JPanel(new GridLayout(1, 0));
+		contentPane.add(initTaskPane(connection));
 		contentPane.setOpaque(true);
 		setContentPane(contentPane);
+
 		setSize(800, 600);
 		setVisible(true);
 	}

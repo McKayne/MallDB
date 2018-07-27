@@ -22,7 +22,7 @@ public class CreateAndFill {
 	private static ArrayList<String> firstNames, lastNames;
 
 	private static void fillPurchasedWaresTable(Connection connection) throws SQLException {
-		ArrayList<String> wares = new ArrayList<String>();
+		ArrayList<String> wares = new ArrayList<>();
 		try (FileInputStream fileInput = new FileInputStream("wares.txt");
 			DataInputStream dataInput = new DataInputStream(fileInput);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput))) {
@@ -148,7 +148,7 @@ public class CreateAndFill {
 	}
 
 	private static void fillStoreTable(Connection connection) throws SQLException {
-		ArrayList<String> stores = new ArrayList<String>();
+		ArrayList<String> stores = new ArrayList<>();
 		try (FileInputStream fileInput = new FileInputStream("stores.txt");
 			DataInputStream dataInput = new DataInputStream(fileInput);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput))) {
@@ -211,7 +211,7 @@ public class CreateAndFill {
 	}
 
 	private static void fillLastNames() {
-		lastNames = new ArrayList<String>();
+		lastNames = new ArrayList<>();
 		try (FileInputStream fileInput = new FileInputStream("lastNames.txt");
 			DataInputStream dataInput = new DataInputStream(fileInput);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput))) {
@@ -225,7 +225,7 @@ public class CreateAndFill {
 	}
 
 	private static void fillFirstNames() {
-		firstNames = new ArrayList<String>();
+		firstNames = new ArrayList<>();
 		try (FileInputStream fileInput = new FileInputStream("firstNames.txt");
 			DataInputStream dataInput = new DataInputStream(fileInput);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput))) {
