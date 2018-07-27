@@ -2,36 +2,24 @@ package com.mall;
 
 import java.io.*;
 import java.sql.*;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * Hello world!
- *
- */
 public class CreateAndFill { 
 
-	private static Connection connection;
 	private static int storeOwnerQuantity, storeQuantity, storeEmployeeQuantity, customerQuantity, purchaseQuantity, cashierQuantity;
 	private static Random random = new Random();
-	private static Vector<String> firstNames, lastNames;
+	private static ArrayList<String> firstNames, lastNames;
 
-	private static void dropSchema() throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("drop schema public cascade; create schema public;");
-		statement.executeUpdate();
-	}
-
-	private static void fillPurchasedWaresTable() throws SQLException {
-		Vector<String> wares = new Vector<String>();
-		try {
-			FileInputStream fileInput = new FileInputStream("/var/lib/postgresql/MallDB/wares");
+	private static void fillPurchasedWaresTable(Connection connection) throws SQLException {
+		ArrayList<String> wares = new ArrayList<String>();
+		try (FileInputStream fileInput = new FileInputStream("wares.txt");
 			DataInputStream dataInput = new DataInputStream(fileInput);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput));
-			String inputLine;
-			while ((inputLine = reader.readLine()) != null) {
-				wares.add(inputLine);
-			}
-			dataInput.close();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput))) {
+				String inputLine;
+				while ((inputLine = reader.readLine()) != null) {
+					wares.add(inputLine);
+				}
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -48,7 +36,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillPurchaseTable() throws SQLException {
+	private static void fillPurchaseTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("insert into purchase(number, date, payment_type_id, customer_id, cashier_id) values(?, ?, ?, ?, ?);");
 		purchaseQuantity = (random.nextInt(3) + 1) * customerQuantity;
 		for (int i = 0; i < purchaseQuantity; i++) {
@@ -63,7 +51,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillPaymentTypeTable() throws SQLException {
+	private static void fillPaymentTypeTable(Connection connection) throws SQLException {
 		String data[] = new String[]{"Cash", "VISA", "MasterCard", "Maestro"};
 		PreparedStatement statement = connection.prepareStatement("insert into payment_type(type) values(?);");
 		for (int i = 0; i < data.length; i++) {
@@ -72,7 +60,7 @@ public class CreateAndFill {
 		} 
 	}
 
-	private static void fillCustomerTable() throws SQLException {
+	private static void fillCustomerTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("insert into customer(first_name, last_name, last_visit) values(?, ?, ?);");
 		customerQuantity = random.nextInt(1000) + 1200; 
 		for (int i = 0; i < customerQuantity; i++) {
@@ -85,7 +73,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillStoreAccountantEntryTable() throws SQLException {
+	private static void fillStoreAccountantEntryTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("insert into store_accountant_entry(revenue, rent_loss, tax_loss, store_employee_id) values(?, ?, ?, ?);");
 		for (int i = 0; i < storeQuantity; i++) {
 			statement.setInt(1, 100);
@@ -96,7 +84,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillCashierEntryTable() throws SQLException {
+	private static void fillCashierEntryTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("insert into cashier_entry(store_employee_id) values(?);");
 		for (int i = 0; i < storeQuantity; i++) {
 			statement.setInt(1, random.nextInt(storeEmployeeQuantity) + 1);
@@ -104,7 +92,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillStoreEmployeeTable() throws SQLException {
+	private static void fillStoreEmployeeTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("insert into store_employee(first_name, last_name, experience, job_id, store_id) values(?, ?, ?, ?, ?);");
 		PreparedStatement cashier = connection.prepareStatement("insert into cashier_entry(store_employee_id) values(?);"); 
 		PreparedStatement accountant = connection.prepareStatement("insert into store_accountant_entry(revenue, rent_loss, tax_loss, store_employee_id) values(?, ?, ?, ?);");
@@ -139,7 +127,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillJobTable() throws SQLException {
+	private static void fillJobTable(Connection connection) throws SQLException {
 		String job[] = new String[]{"Accountant", "Analytics", "Big Data", "Cashier", "Cloud Computing", "Database Programming", "Internet Security", "Network Administration"};
 		PreparedStatement statement = connection.prepareStatement("insert into job(name, salary) values(?, ?);");
 		for (int i = 0; i < job.length; i++) {
@@ -149,17 +137,15 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillStoreTable() throws SQLException {
-		Vector<String> stores = new Vector<String>();
-		try {
-			FileInputStream fileInput = new FileInputStream("/var/lib/postgresql/MallDB/stores");
+	private static void fillStoreTable(Connection connection) throws SQLException {
+		ArrayList<String> stores = new ArrayList<String>();
+		try (FileInputStream fileInput = new FileInputStream("stores.txt");
 			DataInputStream dataInput = new DataInputStream(fileInput);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput));
-			String inputLine;
-			while ((inputLine = reader.readLine()) != null) {
-				stores.add(inputLine);
-			}
-			dataInput.close();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput))) {
+				String inputLine;
+				while ((inputLine = reader.readLine()) != null) {
+					stores.add(inputLine);
+				}
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -173,7 +159,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillStoreOwnerEntryTable() throws SQLException {
+	private static void fillStoreOwnerEntryTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("insert into store_owner_entry(first_name, last_name) values(?, ?);");
 		storeOwnerQuantity = random.nextInt(30) + 20;
 		for (int i = 0; i < storeOwnerQuantity; i++) {
@@ -183,7 +169,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillMallAreaTable() throws SQLException {
+	private static void fillMallAreaTable(Connection connection) throws SQLException {
 		String code[] = new String[25];
 		for (int i = 0; i < code.length; i++) {
 			code[i] = "";
@@ -203,7 +189,7 @@ public class CreateAndFill {
 		}
 	}
 
-	private static void fillLevelTable() throws SQLException {
+	private static void fillLevelTable(Connection connection) throws SQLException {
 		int number[] = new int[]{-1, 0, 1, 2, 3};
 		int additionalRent[] = new int[]{0, 25, 10, 8, 5};
 		PreparedStatement statement = connection.prepareStatement("insert into level(number, additional_rent) values(?, ?);");
@@ -215,38 +201,34 @@ public class CreateAndFill {
 	}
 
 	private static void fillLastNames() {
-		lastNames = new Vector<String>();
-		try {
-			FileInputStream fileInput = new FileInputStream("/var/lib/postgresql/MallDB/lastNames");
+		lastNames = new ArrayList<String>();
+		try (FileInputStream fileInput = new FileInputStream("lastNames.txt");
 			DataInputStream dataInput = new DataInputStream(fileInput);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput));
-			String inputLine;
-			while ((inputLine = reader.readLine()) != null) {
-				lastNames.add(inputLine);
-			}
-			dataInput.close();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput))) {
+				String inputLine;
+				while ((inputLine = reader.readLine()) != null) {
+					lastNames.add(inputLine);
+				}
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	private static void fillFirstNames() {
-		firstNames = new Vector<String>();
-		try {
-			FileInputStream fileInput = new FileInputStream("/var/lib/postgresql/MallDB/firstNames");
+		firstNames = new ArrayList<String>();
+		try (FileInputStream fileInput = new FileInputStream("firstNames.txt");
 			DataInputStream dataInput = new DataInputStream(fileInput);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput));
-			String inputLine;
-			while ((inputLine = reader.readLine()) != null) {
-				firstNames.add(inputLine);
-			}
-			dataInput.close();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(dataInput))) {
+				String inputLine;
+				while ((inputLine = reader.readLine()) != null) {
+					firstNames.add(inputLine);
+				}
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
 
-	private static void createPurchasedWaresTable() throws SQLException {
+	private static void createPurchasedWaresTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table purchased_wares("
 		+ "purchased_wares_id serial primary key,"
 		+ "number integer,"
@@ -257,7 +239,7 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	}
 
-	private static void createPurchaseTable() throws SQLException {
+	private static void createPurchaseTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table purchase("
 		+ "purchase_id serial primary key,"
 		+ "number integer,"
@@ -268,14 +250,14 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	}
 
-	private static void createPaymentTypeTable() throws SQLException {
+	private static void createPaymentTypeTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table payment_type("
 		+ "payment_type_id serial primary key,"
 		+ "type varchar(20));");
 		statement.executeUpdate();
 	}
 
-	private static void createCustomerTable() throws SQLException {
+	private static void createCustomerTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table customer("
 		+ "customer_id serial primary key,"
 		+ "first_name varchar(100),"
@@ -284,7 +266,7 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	}
 
-	private static void createStoreAccountantEntryTable() throws SQLException {
+	private static void createStoreAccountantEntryTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table store_accountant_entry("
 		+ "store_accountant_id serial primary key,"
 		+ "revenue integer,"
@@ -294,14 +276,14 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	}
 
-	private static void createCashierEntryTable() throws SQLException {
+	private static void createCashierEntryTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table cashier_entry("
 		+ "cashier_id serial primary key,"
 		+ "store_employee_id serial references store_employee(store_employee_id));");
 		statement.executeUpdate();
 	}
 
-	private static void createStoreEmployeeTable() throws SQLException {
+	private static void createStoreEmployeeTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table store_employee("
 		+ "store_employee_id serial primary key,"
 		+ "first_name varchar(100),"
@@ -312,7 +294,7 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	}
 
-	private static void createJobTable() throws SQLException {
+	private static void createJobTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table job("
 		+ "job_id serial primary key,"
 		+ "name varchar(50),"
@@ -320,7 +302,7 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	}
 
-	private static void createStoreTable() throws SQLException {
+	private static void createStoreTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table store("
 		+ "store_id serial primary key,"
 		+ "name varchar(50),"
@@ -329,7 +311,7 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	}
 
-	private static void createStoreOwnerEntryTable() throws SQLException {
+	private static void createStoreOwnerEntryTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table store_owner_entry("
 		+ "store_owner_id serial primary key,"
 		+ "first_name varchar(100),"
@@ -337,7 +319,7 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	}
 
-	private static void createMallAreaTable() throws SQLException {
+	private static void createMallAreaTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table mall_area("
 		+ "mall_area_id serial primary key,"
 		+ "code varchar(1),"
@@ -346,7 +328,7 @@ public class CreateAndFill {
 		statement.executeUpdate();
 	} 
 
-	private static void createLevelTable() throws SQLException {
+	private static void createLevelTable(Connection connection) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("create table level("
 		+ "level_id serial primary key,"
 		+ "number integer,"
@@ -354,36 +336,34 @@ public class CreateAndFill {
 		statement.executeUpdate(); 
 	}
 
-	private static void fillAllTables() throws SQLException {
-		fillLevelTable();
-		fillMallAreaTable();
+	private static void fillAllTables(Connection connection) throws SQLException {
+		fillLevelTable(connection);
+		fillMallAreaTable(connection);
 		fillFirstNames();
 		fillLastNames();
-		fillStoreOwnerEntryTable();
-		fillStoreTable();
-		fillJobTable();
-		fillStoreEmployeeTable();
-		//fillCashierEntryTable();
-		//fillStoreAccountantEntryTable();
-		fillCustomerTable();
-		fillPaymentTypeTable();
-		fillPurchaseTable();
-		fillPurchasedWaresTable();
+		fillStoreOwnerEntryTable(connection);
+		fillStoreTable(connection);
+		fillJobTable(connection);
+		fillStoreEmployeeTable(connection);
+		fillCustomerTable(connection);
+		fillPaymentTypeTable(connection);
+		fillPurchaseTable(connection);
+		fillPurchasedWaresTable(connection);
 	}
 
-	private static void createAllTables() throws SQLException {
-		createLevelTable();
-		createMallAreaTable();
-		createStoreOwnerEntryTable();
-		createStoreTable();
-		createJobTable();
-		createStoreEmployeeTable();
-		createCashierEntryTable();
-		createStoreAccountantEntryTable();
-		createCustomerTable();
-		createPaymentTypeTable();
-		createPurchaseTable();
-		createPurchasedWaresTable();
+	private static void createAllTables(Connection connection) throws SQLException {
+		createLevelTable(connection);
+		createMallAreaTable(connection);
+		createStoreOwnerEntryTable(connection);
+		createStoreTable(connection);
+		createJobTable(connection);
+		createStoreEmployeeTable(connection);
+		createCashierEntryTable(connection);
+		createStoreAccountantEntryTable(connection);
+		createCustomerTable(connection);
+		createPaymentTypeTable(connection);
+		createPurchaseTable(connection);
+		createPurchasedWaresTable(connection);
 	}
 
 	public static Connection getConnection() {
@@ -399,17 +379,22 @@ public class CreateAndFill {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
+
 		return connection;
 	}
 
 	public static void main(String[] args) {
-		connection = getConnection();
 		try {
-			createAllTables();
-			fillAllTables();
-			//dropSchema();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
+			Class.forName("org.postgresql.Driver");
+
+			try (Connection connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/mall", "postgres", "postgres")) {
+				createAllTables(connection);
+				fillAllTables(connection);
+			}
+		} catch (ClassNotFoundException ex1) {
+			ex1.printStackTrace();
+		} catch (SQLException ex2) {
+			ex2.printStackTrace();
 		}
 	}
 }
