@@ -34,7 +34,7 @@ public class CashierPanel extends JPanel {
 	private int cashierId;
 	private JTable customerTable, purchasedTable;
 	private JLabel numberLabel, dateLabel;
-	private TitledBorder purchaseBorder = BorderFactory.createTitledBorder("123");
+	private TitledBorder purchaseBorder = BorderFactory.createTitledBorder("");
 	private ArrayList<Integer> customerIds = new ArrayList<Integer>(), purchaseIds = new ArrayList<Integer>();
 	private ArrayList<String> customerFirstNames = new ArrayList<>(), customerLastNames = new ArrayList<>(), dates = new ArrayList<>();
 	private ArrayList purchasedName = new ArrayList(), purchasedPrice = new ArrayList(), purchasedQuantity = new ArrayList(), purchaseNumber = new ArrayList(), purchaseDate = new ArrayList();
@@ -138,11 +138,11 @@ public class CashierPanel extends JPanel {
 		c.weightx = 1.0;
 		JButton next = new JButton("Next");
 		textControlsPane.add(next);
-		next.addActionListener(new CustomerAdditionActionListener(connection, firstNameField, secondNameField, ftf, customerFirstNames, customerLastNames, dates, customerTable, cashierId, purchasedName, purchasedPrice, purchasedQuantity, purchaseNumber, purchaseDate, insertFrame));
+		next.addActionListener(new CustomerAdditionActionListener(connection, this, cashierId, firstNameField, secondNameField, ftf, insertFrame));
 		JButton cancel = new JButton("Cancel");
 		textControlsPane.add(cancel);
 		cancel.addActionListener(new CancelButtonActionListener(insertFrame));
-		textControlsPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Personal"),	BorderFactory.createEmptyBorder(5,5,5,5)));
+		textControlsPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Personal"), BorderFactory.createEmptyBorder(5,5,5,5)));
 
 		insertFrame.add(textControlsPane);
 		insertFrame.pack();

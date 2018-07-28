@@ -21,14 +21,11 @@ import javax.swing.table.DefaultTableModel;
 public class CustomerAdditionActionListener implements ActionListener {
 
 	private final Connection connection;
-
+	private final CashierPanel panel;
+	private final JFrame insertFrame;
+	private final int cashierId;
 	private final JTextField firstNameField, secondNameField;
 	private final JFormattedTextField ftf;
-	private final ArrayList<String> customerFirstNames, customerLastNames, dates;
-	private final JTable customerTable;
-	private final int cashierId;
-	private final ArrayList purchasedName, purchasedPrice, purchasedQuantity, purchaseNumber, purchaseDate;
-	private final JFrame insertFrame;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -38,10 +35,10 @@ public class CustomerAdditionActionListener implements ActionListener {
 			statement.setString(2, secondNameField.getText());
 			statement.setDate(3, java.sql.Date.valueOf(ftf.getText()));
 			statement.executeUpdate();
-			customerFirstNames.add(firstNameField.getText());
-			customerLastNames.add(secondNameField.getText());
-			dates.add(ftf.getText());
-			((DefaultTableModel) customerTable.getModel()).addRow(new Object[]{firstNameField.getText(), secondNameField.getText(), ftf.getText()});
+			panel.getCustomerFirstNames().add(firstNameField.getText());
+			panel.getCustomerLastNames().add(secondNameField.getText());
+			panel.getDates().add(ftf.getText());
+			((DefaultTableModel) panel.getCustomerTable().getModel()).addRow(new Object[]{firstNameField.getText(), secondNameField.getText(), ftf.getText()});
 			ArrayList name = new ArrayList();
 			ArrayList price = new ArrayList();
 			ArrayList quantity = new ArrayList();
@@ -66,7 +63,7 @@ public class CustomerAdditionActionListener implements ActionListener {
 			st.setInt(1, random.nextInt(9000000) + 1000000);
 			st.setDate(2, java.sql.Date.valueOf(ftf.getText()));
 			st.setInt(3, 1);
-			st.setInt(4, customerFirstNames.size());
+			st.setInt(4, panel.getCustomerFirstNames().size());
 			st.setInt(5, cashierId);
 			st.executeUpdate();
 			PreparedStatement statement2 = connection.prepareStatement("insert into purchased_wares(purchase_id, number, name, price, quantity) values(?, ?, ?, ?, ?);");
@@ -84,11 +81,11 @@ public class CustomerAdditionActionListener implements ActionListener {
 				quantity.add(q);
 				statement.executeUpdate();
 			}
-			purchasedName.add(name);
-			purchasedPrice.add(price);
-			purchasedQuantity.add(quantity);
-			purchaseNumber.add("12345");
-			purchaseDate.add("2016-01-01");
+			panel.getPurchasedName().add(name);
+			panel.getPurchasedPrice().add(price);
+			panel.getPurchasedQuantity().add(quantity);
+			panel.getPurchaseNumber().add("12345");
+			panel.getPurchaseDate().add("2016-01-01");
 			insertFrame.setVisible(false);
 			JOptionPane.showMessageDialog(null, "Customer added successfully");
 		} catch (SQLException ex) {
@@ -96,22 +93,13 @@ public class CustomerAdditionActionListener implements ActionListener {
 		}
 	}
 
-	public CustomerAdditionActionListener(Connection connection, JTextField firstNameField, JTextField secondNameField, JFormattedTextField ftf, ArrayList<String> customerFirstNames, ArrayList<String> customerLastNames, ArrayList<String> dates, JTable customerTable, int cashierId, ArrayList purchasedName, ArrayList purchasedPrice, ArrayList purchasedQuantity, ArrayList purchaseNumber, ArrayList purchaseDate, JFrame insertFrame) {
+	public CustomerAdditionActionListener(Connection connection, CashierPanel panel, int cashierId, JTextField firstNameField, JTextField secondNameField, JFormattedTextField ftf, JFrame insertFrame) {
 		this.connection = connection;
-
+		this.panel = panel;
+		this.cashierId = cashierId;
 		this.firstNameField = firstNameField;
 		this.secondNameField = secondNameField;
 		this.ftf = ftf;
-		this.customerFirstNames = customerFirstNames;
-		this.customerLastNames = customerLastNames;
-		this.dates = dates;
-		this.customerTable = customerTable;
-		this.cashierId = cashierId;
-		this.purchasedName = purchasedName;
-		this.purchasedPrice = purchasedPrice;
-		this.purchasedQuantity = purchasedQuantity;
-		this.purchaseNumber = purchaseNumber;
-		this.purchaseDate = purchaseDate;
 		this.insertFrame =  insertFrame;
 	}
 }
